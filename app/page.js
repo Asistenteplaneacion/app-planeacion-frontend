@@ -4,20 +4,20 @@ import { useEffect, useState } from "react";
 import styles from '../styles/home.css'
 // import Document from './document/page'
 
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function Home() {
-  const [datas, setDatas] = useState([]);
+  const [datas, setDatas] = useState();
+  const baseUrl = 'http://localhost:5000/megas'
+
 
   const fetchDatas = () => {
-    fetch(`${baseUrl}`)
+    fetch(baseUrl)
       .then((res) => res.json())
-      .then(({ datas }) => {
-        setDatas(datas);
+      .then(( res ) => {
+        setDatas(res);
       });
   };
-
-
+  
   return (
     <>
       <div onClick={fetchDatas}>
@@ -25,7 +25,12 @@ export default function Home() {
         </div>
       
       <div>
-        {datas}
+        {datas? datas.map((data, index) => (
+          <div>
+            <div key={index}>{data.nombre}</div>
+            <div>{data.descripcion}</div>
+          </div>
+          )): <div>CONSULTAR LA BASE DE DATOS</div> }
       </div>
     </>
   );
