@@ -7,7 +7,11 @@ import styles from '../styles/home.css'
 
 export default function Home() {
   const [datas, setDatas] = useState();
+  const [pers, setPers] = useState();
+
   const baseUrl = 'http://localhost:5000/megas'
+  const basePerspectivaUrl = 'http://localhost:5000/perspectiva'
+
 
 
   const fetchDatas = () => {
@@ -17,6 +21,14 @@ export default function Home() {
         setDatas(res);
       });
   };
+
+  const fetchPers = () => {
+    fetch(basePerspectivaUrl)
+      .then((res) => res.json())
+      .then(( res ) => {
+        setPers(res);
+      });
+  };
   
   return (
     <>
@@ -24,14 +36,29 @@ export default function Home() {
         consultar
         </div>
       
-      <div>
-        {datas? datas.map((data, index) => (
-          <div>
-            <div key={index}>{data.nombre}</div>
-            <div>{data.descripcion}</div>
-          </div>
-          )): <div>CONSULTAR LA BASE DE DATOS</div> }
-      </div>
+        <div>
+          {datas ? datas.map((data, index) => (
+            <div key={index}>
+              <div>{data.nombre}</div>
+              <div>{data.descripcion}</div>
+            </div>
+          )) : <div>CONSULTAR LA BASE DE DATOS</div>}
+        </div>
+
+
+
+        <div onClick={fetchPers}>
+        consultar
+        </div>
+      
+        <div>
+          {pers ? pers.map((data, index) => (
+            <div key={index}>
+              <div>{data.nombre}</div>
+              <div>{data.descripcion}</div>
+            </div>
+          )) : <div>CONSULTAR DATOS DE PERSPECTIVA</div>}
+        </div>
     </>
   );
 }
