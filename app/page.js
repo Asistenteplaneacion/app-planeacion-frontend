@@ -6,48 +6,83 @@ import styles from '../styles/home.css'
 
 
 export default function Home() {
-  const [datas, setDatas] = useState();
-  const [pers, setPers] = useState();
+  const [objetivo, setObjetivo] = useState();
+  const [politica, setPolitica] = useState();
+  // const [pers, setPers] = useState();
 
-  const baseUrl = 'http://localhost:5000/megas'
-  const basePerspectivaUrl = 'http://localhost:5000/perspectiva'
+  const baseUrl = 'http://localhost:5000/objetivo'
+  const basePolitica = 'http://localhost:5000/politica'
+
+  // const basePerspectivaUrl = 'http://localhost:5000/perspectiva'
 
 
 
-  const fetchDatas = () => {
+  const fetchObjetivos = () => {
     fetch(baseUrl)
       .then((res) => res.json())
       .then(( res ) => {
-        setDatas(res);
+        setObjetivo(res);
       });
   };
 
-  const fetchPers = () => {
-    fetch(basePerspectivaUrl)
+
+  const fetchPolitica = () => {
+    fetch(basePolitica)
       .then((res) => res.json())
       .then(( res ) => {
-        setPers(res);
+        setPolitica(res);
       });
   };
+
+  // const fetchPers = () => {
+  //   fetch(basePerspectivaUrl)
+  //     .then((res) => res.json())
+  //     .then(( res ) => {
+  //       setPers(res);
+  //     });
+  // };
   
   return (
     <>
-      <div onClick={fetchDatas}>
+
+Ojetivos Estratégicos: <button onClick={fetchObjetivos}>Consultar</button>
+    
+    <div>
+      {objetivo ? (
+        <select>
+          {objetivo.map((obj, index) => (
+            <option key={index} value={obj.nombre}>{obj.nombre}</option>
+          ))}
+        </select>
+      ) : <div>CONSULTAR LA BASE DE DATOS</div>}
+    </div>
+
+    <button onClick={fetchPolitica}>Consultar</button>
+    
+    <div>
+      {politica ? (
+        <select>
+          {politica.map((politica, index) => (
+            <option key={index} value={politica.nombre}>{politica.nombre}</option>
+          ))}
+        </select>
+      ) : <div>CONSULTAR POLITICAS</div>}
+    </div>
+    
+      {/* <div onClick={fetchObjetivos}>
         consultar
         </div>
-      
         <div>
-          {datas ? datas.map((data, index) => (
+          {objetivo ?  objetivo.map((objetivo, index) => (
             <div key={index}>
-              <div>{data.nombre}</div>
-              <div>{data.descripcion}</div>
+              <div>{objetivo.nombre}</div>
             </div>
           )) : <div>CONSULTAR LA BASE DE DATOS</div>}
-        </div>
+        </div> */}
 
 
 
-        <div onClick={fetchPers}>
+        {/* <div onClick={fetchPers}>
         consultar
         </div>
       
@@ -58,7 +93,7 @@ export default function Home() {
               <div>{data.descripcion}</div>
             </div>
           )) : <div>CONSULTAR DATOS DE PERSPECTIVA</div>}
-        </div>
+        </div> */}
     </>
   );
 }
