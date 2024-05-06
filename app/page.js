@@ -1,17 +1,43 @@
 'use client'
-import { useEffect, useState } from "react";
+
+
+import React, { useEffect, useState } from "react";
 import styles from '../styles/home.css'
 
 export default function Home() {
   const [objetivo, setObjetivo] = useState([]);
   const [politica, setPolitica] = useState([]);
-  const [selectedObjetivo, setSelectedObjetivo] = useState(""); // Estado para almacenar el objetivo seleccionado
-  const [selectedPolitica, setSelectedPolitica] = useState(""); // Estado para almacenar la política seleccionada
-  const [selectedData, setSelectedData] = useState([]); // Estado para almacenar los datos seleccionados de la tabla
+  const [programa, setPrograma] = useState([]);
+  const [proyecto, setProyecto] = useState([]);
+  const [componente, setComponente] = useState([]);
+  const [responsableComponente, setResponsableComponente] = useState([]);
 
-  const baseUrl = 'http://localhost:5000/objetivo'
-  const basePolitica = 'http://localhost:5000/politica'
-  const saveUrl = 'http://localhost:5000/saveData'; // URL de la API para guardar datos
+
+
+  const [selectedObjetivo, setSelectedObjetivo] = useState(""); 
+  const [selectedPolitica, setSelectedPolitica] = useState("");
+  const [selectedPrograma, setselectedPrograma] = useState("");
+  const [selectedProyecto, setselectedProyecto] = useState("");
+  const [selectedComponente, setselectedComponente] = useState("");
+  const [selectedResponsableComponente, setselectedResponsableComponente] = useState("");
+
+
+
+
+  const [selectedData, setSelectedData] = useState([]);
+
+
+  const baseUrl = 'http://localhost:5000/objetivo';
+  const basePolitica = 'http://localhost:5000/politica';
+  const basePrograma = 'http://localhost:5000/programa';
+  const baseProyecto = 'http://localhost:5000/proyecto';
+  const baseComponente = 'http://localhost:5000/componente';
+  const baseResponsableComponente = 'http://localhost:5000/responsableComponente';
+
+
+
+  const saveUrl = 'http://localhost:5000/saveData';
+
 
   const fetchObjetivos = () => {
     fetch(baseUrl)
@@ -29,10 +55,56 @@ export default function Home() {
       });
   };
 
+  const fetchPrograma = () => {
+    fetch(basePrograma)
+      .then((res) => res.json())
+      .then((res) => {
+        setPrograma(res);
+      });
+  };
+
+  const fetchProyecto = () => {
+    fetch(baseProyecto)
+      .then((res) => res.json())
+      .then((res) => {
+        setProyecto(res);
+      });
+  };
+
+  const fetchComponente = () => {
+    fetch(baseComponente)
+      .then((res) => res.json())
+      .then((res) => {
+        setComponente(res);
+      });
+  };
+
+  const fetchResponsableComponente = () => {
+    fetch(baseResponsableComponente)
+      .then((res) => res.json())
+      .then((res) => {
+        setResponsableComponente(res);
+      });
+  };
+
+  const fetchSavedData = () => {
+    fetch(saveUrl)
+      .then((res) => res.json())
+      .then((res) => {
+        setSelectedData(res);
+      });
+  };
+
   useEffect(() => {
     fetchObjetivos();
     fetchPolitica();
-  }, []); // Llamada inicial al cargar el componente
+    fetchPrograma();
+    fetchProyecto();
+    fetchComponente();
+    fetchResponsableComponente();
+    
+    fetchSavedData(); // Cargar los datos guardados al montar el componente
+  }, []); 
 
   const handleObjetivoChange = (e) => {
     setSelectedObjetivo(e.target.value);
@@ -42,9 +114,32 @@ export default function Home() {
     setSelectedPolitica(e.target.value);
   };
 
+  const handleProgramaChange = (e) => {
+    setselectedPrograma(e.target.value);
+  };
+
+  const handleProyectoChange = (e) => {
+    setselectedProyecto(e.target.value);
+  };
+
+  const handleComponenteChange = (e) => {
+    setselectedComponente(e.target.value);
+  };
+
+  const handleResponsableComponenteChange = (e) => {
+    setselectedResponsableComponente(e.target.value);
+  };
+
   const handleSave = () => {
-    const newData = { objetivo: selectedObjetivo, politica: selectedPolitica };
-    // Enviar newData a la API para guardar en la base de datos
+    const newData = 
+    { 
+      objetivo: selectedObjetivo,
+      politica: selectedPolitica,
+      programa: selectedPrograma,
+      proyecto: selectedProyecto,
+      componente: selectedComponente,
+      responsableComponente: selectedResponsableComponente,
+    };
     fetch(saveUrl, {
       method: 'POST',
       headers: {
@@ -55,15 +150,17 @@ export default function Home() {
     .then(response => response.json())
     .then(data => {
       console.log('Data saved:', data);
-      // Actualizar el estado selectedData con los nuevos datos guardados
       setSelectedData([...selectedData, newData]);
     })
     .catch(error => {
       console.error('Error saving data:', error);
     });
-    // Limpiar los campos de selección después de guardar
     setSelectedObjetivo("");
     setSelectedPolitica("");
+    setselectedPrograma("");
+    setselectedProyecto("");
+    setselectedComponente("");
+    setselectedResponsableComponente("");
   };
 
   return (
@@ -79,11 +176,51 @@ export default function Home() {
       </div>
 
       <div>
-        <h3>Selecciona una política asociada:</h3>
+        <h3>Selecciona una política:</h3>
         <select value={selectedPolitica} onChange={handlePoliticaChange}>
           <option value="">Seleccionar política</option>
           {politica.map((pol, index) => (
             <option key={index} value={pol.nombre}>{pol.nombre}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <h3>Selecciona una programa:</h3>
+        <select value={selectedPrograma} onChange={handleProgramaChange}>
+          <option value="">Seleccionar programa</option>
+          {programa.map((pro, index) => (
+            <option key={index} value={pro.nombre}>{pro.nombre}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <h3>Selecciona una proyecto:</h3>
+        <select value={selectedProyecto} onChange={handleProyectoChange}>
+          <option value="">Seleccionar proyecto</option>
+          {proyecto.map((proyec, index) => (
+            <option key={index} value={proyec.nombre}>{proyec.nombre}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <h3>Selecciona un componente:</h3>
+        <select value={selectedComponente} onChange={handleComponenteChange}>
+          <option value="">Seleccionar componente</option>
+          {componente.map((componen, index) => (
+            <option key={index} value={componen.codigoComponente}>{componen.codigoComponente}</option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <h3>Selecciona un areá Responsable:</h3>
+        <select value={selectedResponsableComponente} onChange={handleResponsableComponenteChange}>
+          <option value="">Seleccionar Areá</option>
+          {responsableComponente.map((ResComponen, index) => (
+            <option key={index} value={ResComponen.area}>{ResComponen.area}</option>
           ))}
         </select>
       </div>
@@ -95,7 +232,13 @@ export default function Home() {
         <thead>
           <tr>
             <th>Objetivo Estratégico</th>
-            <th>Política Asociada</th>
+            <th>Política</th>
+            <th>Programa</th>
+            <th>Proyecto</th>
+            <th>Componente</th>
+            <th>Responsable Componente</th>
+
+            
           </tr>
         </thead>
         <tbody>
@@ -103,6 +246,11 @@ export default function Home() {
             <tr key={index}>
               <td>{data.objetivo}</td>
               <td>{data.politica}</td>
+              <td>{data.programa}</td>
+              <td>{data.proyecto}</td>
+              <td>{data.componente}</td>
+              <td>{data.responsableComponente}</td>
+              
             </tr>
           ))}
         </tbody>
